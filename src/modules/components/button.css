@@ -1,0 +1,168 @@
+ .pause-button{
+    width: 100px;
+
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    margin-right: 10px;
+    /* margin-left: 25px; */
+    transition: 0.5s;
+
+    text-align: center;
+    padding-right: 10px;
+    height:min-content;
+    background-color: #fddb91;
+    border-color: black;
+    color:black;
+}  
+.pause-button:hover{
+    color: black;
+    border-color: black;
+
+    background-color: #ffbd30;
+    transition: 0.5s;
+}
+
+.my-button-class {
+    background-color: blue;
+    color: white;
+    font-size: 16px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+.resume-button{
+    /* transition: 2s; */
+    width: 100px;
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    text-align: center;
+    padding-right: 10px;
+    margin-right: 10px;
+    transition: 0.5s;
+
+    height:min-content;
+    border-color: black;
+    background-color: rgb(186, 255, 191);
+    /* color: white; */
+    color: black
+}
+
+.resume-button:hover{
+    /* transition: 2s; */
+    /* width: 100px;
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    text-align: center;
+    padding-right: 10px;
+    height:min-content; */
+    border-color: black;
+    background-color: rgb(87, 255, 98);
+    transition: 0.5s;
+    /* color: white; */
+}
+
+.kill-button{
+    /* transition: 2s; */
+    width: 100px;
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    margin-right: 10px;
+    text-align: center;
+    padding-right: 10px;
+    height:min-content;
+    border-color: black;
+    background-color: rgba(255, 129, 129, 0.822);
+    color: black;
+}
+.kill-button:hover{
+    transition: 0.5s;
+    /* width: 100px;
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    text-align: center;
+    padding-right: 10px;
+    height:min-content;*/
+    border-color: black; 
+    background-color: rgba(255, 76, 76, 0.822);
+    /* color: black; */
+}
+
+.change-priority-button{
+    width: 180px;
+
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    margin-right: 10px;
+    /* margin-left: 25px; */
+
+    text-align: center;
+    padding-right: 10px;
+    height:min-content;
+    background-color: #afdbff;
+    border-color: black;
+    color:black;
+} 
+
+.change-priority-button:hover{
+    /* width: 180px;
+
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    margin-right: 10px;
+    /* margin-left: 25px; */
+
+    /* text-align: center;
+    padding-right: 10px;
+    height:min-content;  */
+    background-color: #80c6ff;
+    border-color: black;
+    color:black;
+} 
+
+.chip-button{
+
+    width: 100px;
+    border-radius: 40px;
+    border-width: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    padding-left: 10px;
+    text-align: center;
+    padding-right: 10px;
+    margin-right: 10px;
+    transition: 0.5s;
+
+    height:min-content;
+    border-color: black;
+    background-color: transparent;
+    /* color: white; */
+    color: black
+}
+
+.selected{
+    background-color: black;
+    color: white;
+}

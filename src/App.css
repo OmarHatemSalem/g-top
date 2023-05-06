@@ -1,0 +1,62 @@
+.logo.vite:hover {
+  filter: drop-shadow(0 0 2em #747bff);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafb);
+}
+
+.row:after {
+  height: 100%;
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+.column {
+  float: left;
+  /* height:100%; */
+  /* width: 50%; */
+  padding: 10px;
+}
+
+.left {
+  width:15%;
+  background-color: #ececec;
+  border-right: 5px;
+  
+}
+.right {
+  padding-left: 75px;
+  width:85%;
+  background-color: #ececec;
+  /* text-align: left; */
+  color: #242424;
+  
+  /* justify-content: space-around; */
+  /* flex-direction: row; */
+  /* text-align: start; */
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* margin-bottom: 30px; */
+  margin-top: 30px;
+  padding-left: 20px;
+}
+
+.headerSecondary{
+  display: flex;
+  justify-content: start;
+  /* align-items: flex-start; */
+  /* margin-bottom: 30px; */
+  margin-top: 30px;
+  
+  /* padding-left: 20px; */
+  margin-left: 20px;
+  /* padding-top: 5px; */
+
+}

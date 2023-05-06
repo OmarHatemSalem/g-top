@@ -1,0 +1,14 @@
+.graph-container{
+    border-radius: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* position: static; */
+    /* align-items: center; */
+    /* align-content: center; */
+    height: 750px;
+    width: 750px;
+    background-color: blue;
+    padding:30px;
+    border-color: transparent;
+}
