@@ -27,8 +27,11 @@ const App = () => {
   };
 
   const [value, setValue] = useState(0);
-  
-  
+  const [currGraph, setGraph] = useState('cpu');
+
+  const handleSetGraph = (graphType)=>{
+    setGraph(graphType);
+  }
   
   return (
     <div className="row">
@@ -55,7 +58,7 @@ const App = () => {
         </Tabs>
         </Paper>
         </div>
-          <h1>Processes</h1>
+          <h1>gTop</h1>
           {/* <h1>Ali Ashraf</h1> */}
           <button onClick={handleClick} className={isPause ? 'pause-button' : 'resume-button'}>
           {isPause ? 'Pause' : 'Resume'}
@@ -66,20 +69,37 @@ const App = () => {
         <div>
          {
            value == 0 ? 
-           <><ProcessTable isPause={isPause} />
+           <>
+           <h2>Processes</h2>
+           <ProcessTable isPause={isPause} />
            <EventsTable isPause={isPause}/></>
 
            :  value == 1 ? 
            <>
-           <h1>Tree</h1>
+           <h2>Tree</h2>
            <Tree isPause={isPause}/>
            </>           
            :
            <>
-           <h1>CPU</h1>
-           <CpuGraph isPause={isPause}/>
-           <h1>Memory</h1>
-           {/* <MemGraph isPause={isPause}/> */}
+           <h2>Graphs</h2>
+
+            <button onClick={()=>handleSetGraph('cpu')} className={currGraph =='cpu' ? 'chip-button selected' : 'chip-button' }>
+                CPU
+            </button>
+            <button onClick={()=>handleSetGraph('memory')} className={currGraph =='memory' ? 'chip-button selected' : 'chip-button' }>
+                Memory
+            </button>
+            <div style={{ height: '1500px', width: '1500px',display:'flex', justifyContent: 'center',height:' 1500px'}}>
+                {
+                    currGraph == "cpu" 
+                    ? 
+                    
+                    <CpuGraph isPause={isPause}/>
+                    :
+                    <MemGraph isPause={isPause}/>
+
+                }
+            </div>
            </>
 
          } 

@@ -90,10 +90,10 @@ const options = {
   }
 }
 
+const CpuGraph = ({isPause}) => {
 const cpu = invoke("get_curr_total_cpu").then(data => {console.log(data*1); (data*1)});
 console.log("CPU Usage = {%f}\n", cpu);
 
-const CpuGraph = ({isPause}) => {
 
   Chart.defaults.set('plugins.streaming', {
     pause: !isPause
