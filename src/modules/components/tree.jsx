@@ -18,7 +18,7 @@ import {
 
 } from '@mui/material';
 
-const Tree = () => {
+const Tree = ({isPause}) => {
     const [tree, setTree] = useState([]);
     const [rowSelection, setRowSelection] = useState({});
 
@@ -34,14 +34,16 @@ const Tree = () => {
     }
 
     useEffect(() => {
-      // getTree ();
-      let interval = setInterval(getTree, 3000);
-      
-      
-      return () => {
-        clearInterval(interval);
+      if(isPause === true){
+        let interval = setInterval(getTree, 3000);
+        return () => {
+            clearInterval(interval);
+        }
+  
       }
-    }, //[]
+  
+  
+    }, [isPause]
     )
     const columns = useMemo(() => [
         {
@@ -105,47 +107,47 @@ const Tree = () => {
           data={tree}
           enableExpanding
           getSubRows={(originalRow) => originalRow.subRows} //default, can customize
-          initialState={{ sorting : [{id:'record.pid', desc:false}]}}       
+          initialState={{ sorting : [{id:'record.pid', desc:false}]}, {expanded:true}}       
           enablePagination={false}     
           enableRowSelection
           onRowSelectionChange={setRowSelection}
 
-          
-          renderTopToolbarCustomActions={({ table }) => {
+          filterFromLeafRows
+          // renderTopToolbarCustomActions={({ table }) => {
             
-            const handleKill = () => {
+          //   const handleKill = () => {
               
-              table.getSelectedRowModel().flatRows.map((row) => {
+          //     table.getSelectedRowModel().flatRows.map((row) => {
                 
-                invoke("kill_proc", {pid : row.getValue("pid")});
-                setRowSelection({});
+          //       invoke("kill_proc", {pid : row.getValue("pid")});
+          //       setRowSelection({});
                 
-              });
+          //     });
               
-            };
+          //   };
 
-            return (
+          //   return (
         
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+          //     <div style={{ display: 'flex', gap: '0.5rem' }}>
     
-                <Button
+          //       <Button
     
-                  color="error"
+          //         color="error"
     
-                  disabled={!table.getIsSomeRowsSelected()}
+          //         disabled={!table.getIsSomeRowsSelected()}
     
-                  onClick={handleKill}
+          //         onClick={handleKill}
     
-                  variant="contained"
+          //         variant="contained"
     
-                >
+          //       >
     
-                  Kill
+          //         Kill
     
-                </Button>
-              </div>
-            );
-            }}
+          //       </Button>
+          //     </div>
+          //   );
+          //   }}
             />
             );
       

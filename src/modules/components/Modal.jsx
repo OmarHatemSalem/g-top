@@ -16,7 +16,10 @@ import GenericButton from './Button';
 import { useState } from 'react';
 import { invoke } from "@tauri-apps/api/tauri";
 import GenericGraph from './GenericGraph';
-
+import ChildrenTable from './procChildrenTable';
+import { useEffect } from 'react';
+import "./Modal.css";
+import PriorityChangeModal from './priorityChangeModal';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -29,9 +32,23 @@ const  FullScreenDialog = ({open,setOpen, proc}) => {
 //   const [open, setOpen] = React.useState(false);
 const {pid, name: procName} = proc;
 
+const [childProcs, setChildProcs] = useState([]);
+const [isOpen, setIsOpen] = useState(false);
+
+async function handleSetChildProcs(){
+  let chilern = await invoke("get_childern",{pid: pid});
+  setChildProcs(chilern);
+  // return chilern;
+}
+
+useEffect(()=>{
+  handleSetChildProcs();
+},[])
+
 const [currGraph, setGraph] = useState('cpu');
 
 const [isPause, setIsPause] = useState(true); 
+
 
 
   const handlePauseClick = () => {
@@ -45,6 +62,24 @@ const [isPause, setIsPause] = useState(true);
       setOpen(false);
 
   };
+
+  const handlePauseAllClick = () => {
+    setIsPause(!isPause);
+    invoke("pause_proc_rec", {pid : pid});
+    setOpen(false);
+    // console.log(isPause);
+  };
+  const handleKillAll = () => {
+      invoke("kill_proc_rec", {pid : pid});   
+      setOpen(false);
+
+  };
+
+  const handlePriority = () => {
+    // invoke("kill_proc_rec", {pid : pid});   
+    setIsOpen(true);
+
+};
   const handleSetGraph = (graphType)=>{
     setGraph(graphType);
   }
@@ -90,10 +125,16 @@ const [isPause, setIsPause] = useState(true);
         <button onClick={handlePauseClick} className={isPause ? 'pause-button' : 'resume-button'}>
           {isPause ? 'Pause' : 'Resume'}
           </button>  
+          <button onClick={handlePauseAllClick} className={isPause ? 'pause-button extra' : 'resume-button extra'}>
+          {isPause ? 'Pause Childern' : 'Resume Childern'}
+          </button>  
         <button onClick={handleKill} className={'kill-button'}>
           Kill
           </button>
-          <button onClick={handleKill} className={'change-priority-button'}>
+        <button onClick={handleKillAll} className={'kill-button extra'}>
+          Kill Children
+          </button>
+          <button onClick={handlePriority} className={'change-priority-button'}>
           Change Priority
           </button>  
 
@@ -109,17 +150,32 @@ const [isPause, setIsPause] = useState(true);
                 Memory
             </button>
         </div>
-        <div style={{ display:'flex', justifyContent: 'center',height:' 500px'}}>
-            {
-                currGraph == "cpu" 
-                ? 
-                
-                 <GenericGraph pid={pid} graphLabel="CPU Usage" index={0} functionName="get_process_data"/> 
-                :
-                <GenericGraph pid={pid} graphLabel="Memory Usage" index={1} functionName="get_process_data"/> 
+        <div className='container-grid'>
+          <div className='col-1'>
+            <div style={{ height: '750px', width: '750px',display:'flex', justifyContent: 'center',height:' 500px'}}>
+                {
+                    currGraph == "cpu" 
+                    ? 
+                    
+                    <GenericGraph isPause={isPause} pid={pid} graphLabel="CPU Usage" index={0} functionName="get_process_data"/> 
+                    :
+                    <GenericGraph isPause={isPause} pid={pid} graphLabel="Memory Usage" index={1} functionName="get_process_data"/> 
 
-            }
+                }
+            </div>
+          </div>
+          <div className='col-2'>
+            <div>
+              <h1>
+                Children Processes
+              </h1>
+            </div>
+            <ChildrenTable children={childProcs}/>
+          </div>
+          <PriorityChangeModal open={isOpen} setOpen={setIsOpen} selectedProc={proc}/>
+
         </div>
+        
         {/* <List>
           <ListItem button>
             <ListItemText primary="Phone ringtone" secondary="Titania" />

@@ -14,7 +14,8 @@ Chart.register(ChartStreaming);
 // const Chart = require("react-chartjs-2").Chart;
 
 Chart.defaults.set('plugins.streaming', {
-  duration: 15000
+  duration: 15000,
+  refresh: 1000
 });
 
 const chartColors = {
@@ -115,7 +116,12 @@ const options = {
 const cpu = invoke("get_curr_total_cpu").then(data => {console.log(data*1); (data*1)});
 console.log("CPU Usage = {%f}\n", cpu);
 
-function MemGraph() {
+const MemGraph = ({isPause}) => {
+
+  Chart.defaults.set('plugins.streaming', {
+    pause: !isPause
+  });
+
   return (
     <div className="Graph">
       {/* <h1>{invoke("get_curr_total_cpu")}</h1> */}

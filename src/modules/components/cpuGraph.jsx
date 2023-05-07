@@ -8,13 +8,15 @@ import Chart from 'chart.js/auto';
 import ChartStreaming from '@robloche/chartjs-plugin-streaming';
 import 'chartjs-adapter-luxon';
 import { invoke } from "@tauri-apps/api/tauri";
+import { freeze } from "@reduxjs/toolkit";
 
 
 Chart.register(ChartStreaming);
 // const Chart = require("react-chartjs-2").Chart;
 
 Chart.defaults.set('plugins.streaming', {
-  duration: 15000
+  duration: 15000,
+  refresh : 1000
 });
 
 const chartColors = {
@@ -65,7 +67,6 @@ const options = {
         onRefresh: async function(chart) {
           let newPoint = await invoke("get_curr_total_cpu");
           console.log(newPoint);
-          options.scales.y.max =  newPoint.reduce((a, b) => Math.max(a, b), -Infinity);
           
          
           
@@ -92,7 +93,13 @@ const options = {
 const cpu = invoke("get_curr_total_cpu").then(data => {console.log(data*1); (data*1)});
 console.log("CPU Usage = {%f}\n", cpu);
 
-function CpuGraph() {
+const CpuGraph = ({isPause}) => {
+
+  Chart.defaults.set('plugins.streaming', {
+    pause: !isPause
+  });
+
+
   return (
     <div className="Graph">
       {/* <h1>{invoke("get_curr_total_cpu")}</h1> */}

@@ -181,6 +181,28 @@ pub fn get_process_data(pid : u32) -> Vec<f32> {
 
       
 }
+
+#[tauri::command]
+pub fn get_childern(pid : u32) -> Vec<(String, u32)> {
+    let childPids = pstree::get_process_tree(pid);
+
+    let mut sys = System::new();
+    sys.refresh_processes();
+    let sys_procs: &HashMap<Pid, Process> = sys.processes();
+
+
+    let mut childProcs = Vec::<(String, u32)>::new();
+
+    for pid in childPids {
+        dbg!(&pid);
+        if sys_procs.get(&Pid::from_u32(pid)).is_some() {
+        childProcs.push((String::from(sys_procs.get(&Pid::from_u32(pid)).unwrap().name()), pid));
+        }
+    }
+
+    dbg!(&childProcs);
+    return childProcs;
+} 
 // #[tauri::command]
 // pub fn get_network_data() -> Vec<f32> {
 //     let mut sys = System::new();

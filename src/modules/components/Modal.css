@@ -12,3 +12,25 @@
     padding:30px;
     border-color: transparent;
 }
+
+.container-grid {
+    margin-left: 40px;
+    /* background-color: brown; */
+    display: grid;
+    grid-template-columns: 50% 50%; /*columns widths*/
+    height: 40vh;
+  }
+  
+  .col-1 {
+    background-color: transparent;
+  }
+  
+  .col-2 {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    /* align-content: center; */
+    align-items: start;
+    /* background-color: green; */
+  }

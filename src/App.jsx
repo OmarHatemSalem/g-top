@@ -12,7 +12,7 @@ import ProcGraph from "./modules/components/procGraph";
 import GenericGraph from "./modules/components/GenericGraph";
 import CpuGraph from "./modules/components/cpuGraph";
 import MemGraph from "./modules/components/memGraph";
-
+import Tree from "./modules/components/tree";
 
 import Paper from "@mui/material/Paper";
 import Tab from "@mui/material/Tab";
@@ -27,12 +27,14 @@ const App = () => {
   };
 
   const [value, setValue] = useState(0);
-
+  
+  
+  
   return (
     <div className="row">
-      <div className="column left">
+      {/* <div className="column left">
         <h1>The Process Manager</h1>
-      </div>
+      </div> */}
       <div className="column right">
         <div className="header">
         <div>
@@ -47,7 +49,9 @@ const App = () => {
 
         >
           <Tab label="Process Table" />
+          <Tab label="Tree View" />
           <Tab label="Graph View" />
+
         </Tabs>
         </Paper>
         </div>
@@ -61,16 +65,21 @@ const App = () => {
         </div>
         <div>
          {
-           value == 0 ?
+           value == 0 ? 
            <><ProcessTable isPause={isPause} />
-           <EventsTable /></>
+           <EventsTable isPause={isPause}/></>
 
+           :  value == 1 ? 
+           <>
+           <h1>Tree</h1>
+           <Tree isPause={isPause}/>
+           </>           
            :
            <>
            <h1>CPU</h1>
-           <CpuGraph />
+           <CpuGraph isPause={isPause}/>
            <h1>Memory</h1>
-           {/* <MemGraph /> */}
+           {/* <MemGraph isPause={isPause}/> */}
            </>
 
          } 

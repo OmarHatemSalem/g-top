@@ -14,7 +14,8 @@ Chart.register(ChartStreaming);
 // const Chart = require("react-chartjs-2").Chart;
 
 Chart.defaults.set('plugins.streaming', {
-  duration: 15000
+  duration: 15000, 
+  refresh : 1000
 });
 
 const chartColors = {
@@ -28,7 +29,7 @@ const chartColors = {
   };
 
 
-const GenericGraph = ({graphLabel, index, functionName, pid})=>{
+const GenericGraph = ({isPause, graphLabel, index, functionName, pid})=>{
     const options = {
         scales: {
           x: {
@@ -76,6 +77,10 @@ const GenericGraph = ({graphLabel, index, functionName, pid})=>{
         }
     ]
   };
+
+  Chart.defaults.set('plugins.streaming', {
+    pause: !isPause
+  });
 
   return (
     <Line data={stream} options={options} />

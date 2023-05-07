@@ -25,6 +25,10 @@
     transition: 0.5s;
 }
 
+.extra{
+    width:150px;
+}
+
 .my-button-class {
     background-color: blue;
     color: white;
@@ -74,7 +78,7 @@
 
 .kill-button{
     /* transition: 2s; */
-    width: 100px;
+    /* width: 100px; */
     border-radius: 40px;
     border-width: 2px;
     padding-top: 5px;

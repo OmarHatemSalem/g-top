@@ -4,6 +4,7 @@ import { ExportToCsv } from 'export-to-csv'; //or use your library of choice her
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState, useEffect } from 'react';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import './eventsTable.css';
 //Material-UI Imports
 
 import {
@@ -21,6 +22,7 @@ import {
     TextField,
   
   } from '@mui/material';
+import FullScreenDialog from './Modal';
 
 let data = [
     {
@@ -52,11 +54,13 @@ let data = [
 
 
 
-const EventsTable = () => {
+const EventsTable = ({isPause}) => {
   
   
   
   const [events, setEvents] = useState([]);
+  const [isProcViewOpen, setProcView] = useState(false);
+  const [clickedProc, setClickedProc] = useState({})
   
 
   async function getEvents() {
@@ -73,13 +77,16 @@ const EventsTable = () => {
   }
   
   useEffect(() => {
-    let interval = setInterval(getEvents, 2000);
-    
-    
-    return () => {
-      clearInterval(interval);
+    if(isPause === true){
+      let interval = setInterval(getEvents, 3000);
+      return () => {
+          clearInterval(interval);
+      }
+
     }
-  }
+
+
+  }, [isPause]
   )
   
   const columns = useMemo(() => [
@@ -98,11 +105,13 @@ const EventsTable = () => {
       accessorKey: 'category',
       header: 'Category',
       size:25,
-      Cell: ({ cell, row }) => (
+      Cell: ({ cell, row }) => {
+        console.log(cell.getValue()); 
+        (
         <div>
           <strong>{cell.getValue()}</strong>
         </div>
-      ),
+      )},
       
     },
     {
@@ -112,9 +121,22 @@ const EventsTable = () => {
       
     },
     {
-      accessorKey: 'topThree',
+      accessorKey: 'top_three',
       header: 'Top Processes',
       size:15,
+      Cell: ({ cell, row }) => {
+        const [p1, p2, p3] = cell.getValue(); 
+        console.log(`p1 is ${p1[0]}`);
+        console.log(p2[0]);
+        console.log(p3[0]);
+
+        return (
+        <div>
+          <a className='sus-proc' onClick={()=> {setClickedProc({pid: p1[1], name: p1[0]}); setProcView(true)}}>{p1[0]}</a><br/>
+          <a className='sus-proc' onClick={()=> {setClickedProc({pid: p2[1], name: p2[0]}); setProcView(true)}}>{p2[0]}</a><br/>
+          <a className='sus-proc' onClick={()=> {setClickedProc({pid: p3[1], name: p3[0]}); setProcView(true)}}>{p3[0]}</a>
+        </div>
+      )},
       
     },
     {
@@ -153,7 +175,9 @@ const EventsTable = () => {
     };
         
         
-        return (<MaterialReactTable 
+        return (
+        <div>
+        <MaterialReactTable 
             options={{
                 rowStyle: {
                     overflowWrap: 'break-word'
@@ -272,6 +296,9 @@ const EventsTable = () => {
         
             />
         
+            < FullScreenDialog open={isProcViewOpen} setOpen={setProcView} proc={clickedProc}/>
+            
+            </div>
           );
         
         };

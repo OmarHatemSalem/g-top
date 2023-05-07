@@ -32,7 +32,7 @@ pub struct Event {
     pub state: String,
     pub category: String, //EventType,
     pub value: f32,
-    pub top_three: String, //Option<Vec<String>>,
+    pub top_three: Vec<(String, u32)>, //Option<Vec<String>>,
     pub description: String,
 }
 
@@ -44,7 +44,7 @@ impl Event {
             state : String::from("normal"),
             category : String::from("SAFE"),
             value : -1.0,
-            top_three : String::from("-"),
+            top_three : Vec::<(String, u32)>::new(),
             description : String::from("empty event"),
         }
     }
@@ -62,7 +62,7 @@ impl Event {
     fn set_value(&mut self, b : f32) {
         self.value = b;
     }
-    fn set_top(&mut self, b : String) {
+    fn set_top(&mut self, b : Vec<(String, u32)>) {
         self.top_three = b;
     }
     fn set_desc(&mut self, b : String) {
@@ -127,10 +127,10 @@ pub fn check_event() -> Vec<Event>  {
             if swap_per> SWAP_C_THRESHOLD {x.set_state(String::from("C"));} else {x.set_state(String::from("W"));}
             
             top_process.sort_by_key(|k| (k.1).memory()); top_process.reverse();
-            let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
+            let top3 = top_process.as_slice()[0..3].iter().map(|x| (String::from(x.1.name()), x.1.pid().as_u32())).collect::<Vec<(String, u32)>>();
             
-            x.set_top(top3.join(", "));
-            x.set_value(-1.0);
+            x.set_top(top3);
+            x.set_value(swap_per);
             x.set_category(String::from("RAM"));
             // x.set_sor(0);
             
@@ -145,10 +145,10 @@ pub fn check_event() -> Vec<Event>  {
             if iw > IOWAIT_C_THRESHOLD {x.set_state(String::from("C"));} else {x.set_state(String::from("W"));}
             
             top_process.sort_by_key(|k| (k.1).disk_usage().written_bytes); top_process.reverse();
-            let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
-            x.set_top(top3.join(", "));
+            let top3 = top_process.as_slice()[0..3].iter().map(|x| (String::from(x.1.name()), x.1.pid().as_u32())).collect::<Vec<(String, u32)>>();
+            x.set_top(top3);
             
-            x.set_value(-1.0);
+            x.set_value(iw);
             x.set_category(String::from("IO"));
             // x.set_sor(0);
             
@@ -162,8 +162,8 @@ pub fn check_event() -> Vec<Event>  {
             if mem_use > MEM_C_THRESHOLD {x.set_state(String::from("C"));} else {x.set_state(String::from("W"));}
    
             top_process.sort_by_key(|k| (k.1).memory()); top_process.reverse();
-            let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
-            x.set_top(top3.join(", "));
+            let top3 = top_process.as_slice()[0..3].iter().map(|x| (String::from(x.1.name()), x.1.pid().as_u32())).collect::<Vec<(String, u32)>>();
+            x.set_top(top3);
 
             x.set_value(mem_use);
             x.set_category(String::from("MEM"));
@@ -178,10 +178,10 @@ pub fn check_event() -> Vec<Event>  {
             if cpu_use> CPU_C_THRESHOLD {x.set_state(String::from("C"));} else {x.set_state(String::from("W"));}
 
             top_process.sort_by(|a, b| (a.1.cpu_usage()).partial_cmp(&b.1.cpu_usage()).unwrap()); top_process.reverse();
-            let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
-            x.set_top(top3.join(", "));
+            let top3 = top_process.as_slice()[0..3].iter().map(|x| (String::from(x.1.name()), x.1.pid().as_u32())).collect::<Vec<(String, u32)>>();
+            x.set_top(top3);
 
-            x.set_value(-1.0);
+            x.set_value(cpu_use);
             x.set_category(String::from("CPU"));
             // x.set_sor(0);
             

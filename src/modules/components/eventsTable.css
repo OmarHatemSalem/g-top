@@ -1,0 +1,15 @@
+.sus-proc{
+    cursor: pointer;
+    color: black;
+    padding-top:2px;
+    padding-bottom:2px;
+    padding-left:4px;
+    padding-top:4px;
+    
+    
+}
+.sus-proc:hover{
+    color: black;
+    background-color: rgba(255, 129, 129, 0.822);
+    border-radius: 40px;
+}

@@ -25,6 +25,7 @@ import {
   
   } from '@mui/material';
 import FullScreenDialog from './Modal';
+import PriorityChangeModal from './priorityChangeModal';
 
 
 let pause = "Pause"  
@@ -53,7 +54,9 @@ const ProcessTable = ({isPause}) => {
   
   
   const [rowData, setRowData] = useState({});
+  // const 
   const [isProcViewOpen, setProcView] = useState(false);
+  const [isPriorityViewOpen, setPriorityView] = useState(false);
   const [procs, setProcs] = useState("");
   const [rowSelection, setRowSelection] = useState({});
   // const [pids, setPids] = useState([]);  
@@ -177,6 +180,25 @@ const ProcessTable = ({isPause}) => {
     headers: columns.map((c) => c.header),
   };
   
+  // const regexSearch = (searchTerm, dataArray, keys) => {
+  //   const escapedSearchTerm = searchTerm.replace(/[.+^${}()|[\]\\]/g, '\\$&'); // regexp escape  escape special characters in the search term
+  //   const regex = new RegExp(`^${escapedSearchTerm.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
+    
+  //   const filteredData = dataArray.filter((item) => {
+  //     return keys.some((key) => regex.test(item[key])); // apply the regular expression test to the value of any of the specified keys in each object
+  //   });
+  //   return filteredData; // return the filtered array
+  // }
+
+  // const regexSearch = (row, id, filteredValue) => {
+  //   const escapedSearchTerm = filteredValue.replace(/[.+^${}()|[\]\\]/g, '\\$&'); // regexp escape  escape special characters in the search term
+  //   const regex = new RegExp(`^${escapedSearchTerm.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
+  //   console.log(row, id, filteredValue);
+  //   return regex.test(row.getValue(id))
+    
+  // }
+  
+  
   const csvExporter = new ExportToCsv(csvOptions);
   
   const handleExportRows = (rows) => {
@@ -184,32 +206,30 @@ const ProcessTable = ({isPause}) => {
     };
 
     const handleExportData = () => {
-      // cols  = columns.map(c => c.header);
-      // data = procs;
-      // const save = procs.forEach(p => {
-      //   console.log({
-      //     Process: p.name,
-      //     PID: p.pid,
-      //     State: p.state,
-      //     Priority: p.priority,
-      //     Parent: p.parent,
-      //     CPU: p.cpu_usage,
-      //     MEM: p.mem_usage
-      // });
-      //   save.push({
-      //     Process: p.name,
-      //     PID: p.pid,
-      //     State: p.state,
-      //     Priority: p.priority,
-      //     Parent: p.parent,
-      //     CPU: p.cpu_usage,
-      //     MEM: p.mem_usage
-      // });
-      //   console.log(save);
-      // })
-      // console.log("new convert");
-      // console.log(save);
-      csvExporter.generateCsv(procs);
+      // const cols  = columns.map(c => c.header);
+      let save = [];
+      procs.forEach(p => {
+        console.log([
+          p.name,
+          p.pid,
+          p.state,
+          p.priority,
+          p.parent,
+          p.cpu_usage,
+          p.mem_usage
+        ]);
+        save.push([
+          p.name,
+          p.pid,
+          p.state,
+          p.priority,
+          p.parent,
+          p.cpu_usage,
+          p.mem_usage
+        ]);
+        console.log(save);
+      })
+      csvExporter.generateCsv(save);
       console.log("Data Written");
     };
         
@@ -241,9 +261,27 @@ const ProcessTable = ({isPause}) => {
             onRowSelectionChange={setRowSelection}
             state={{ rowSelection }}
             getRowId={(originalRow) => originalRow.pid}
-            enableFilterMatchHighlighting
+            // enableFilterMatchHighlighting
             initialState={{ columnPinning: { left: ['name'] }},{sorting : [{id:'cpu_usage', desc:true}]}}            
-            enableColumnDragging={false} //do not show drag handle buttons, but still show grouping options in column actions menu
+            enableColumnDragging={false} 
+            
+            filterFns={{
+              regexSearch: (row, id, filteredValue) => {
+                const escapedSearchTerm = filteredValue.replace(/[.+^${}()|[\]\\]/g, '\\$&'); // regexp escape  escape special characters in the search term
+                const regex = new RegExp(`^${escapedSearchTerm.replace(/\*/g,'.*').replace(/\?/g,'.')}$`,'i');
+                // console.log(escapedSearchTerm);
+                // console.log(row, id, filteredValue);
+                console.log("searching\n");
+                return regex.test(row.getValue(id))
+                
+              }
+              // myCustomFilterFn: (row, id, filterValue) =>
+              //   row.getValue(id).startsWith(filterValue),
+              
+            }}
+            globalFilterFn="regexSearch"
+            
+            //do not show drag handle buttons, but still show grouping options in column actions menu
             //   initialState={{ columnPinning: { left: ['state'] } }} //pin email column to left by default       
         
               renderTopToolbarCustomActions={({ table }) => {
@@ -271,12 +309,14 @@ const ProcessTable = ({isPause}) => {
                 };
                 
                 const handlePriority = () => {
-        
                   table.getSelectedRowModel().flatRows.map((row) => {
-        
-                    invoke("set_priority", {pid : row.getValue("pid"), priority : 10})
-        
+                    // setRowData({{pid: }})
+                    setRowData({pid:row.getValue('pid'), name: row.getValue('name'), priority: row.getValue('priority')}); 
+
+                    // invoke("set_priority", {pid : row.getValue("pid"), priority : 10})
+                    
                   });
+                  setPriorityView(true);
         
                 };  
                 
@@ -404,7 +444,8 @@ const ProcessTable = ({isPause}) => {
         
             />
             
-            <FullScreenDialog open={isProcViewOpen} setOpen={setProcView} proc={rowData}/>
+            <FullScreenDialog isPause={isPause} open={isProcViewOpen} setOpen={setProcView} proc={rowData}/>
+            <PriorityChangeModal open={isPriorityViewOpen} setOpen={setPriorityView} selectedProc={rowData}/>
         </div>
             );
         
