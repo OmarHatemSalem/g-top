@@ -17,8 +17,8 @@ const IOWAIT_C_THRESHOLD: f32 = 0.25;
 const SWAP_W_THRESHOLD: f32 = 75.0;
 const SWAP_C_THRESHOLD: f32 = 90.0;
 
-// const IDLE_W_THRESHOLD: f32 = 0.25;
-// const IDLE_C_THRESHOLD: f32 = 0.10;
+const MEM_W_THRESHOLD: f32 = 75.0;
+const MEM_C_THRESHOLD: f32 = 90.0;
 
 const CPU_W_THRESHOLD: f32 = 75.0;
 const CPU_C_THRESHOLD: f32 = 90.0;
@@ -88,9 +88,11 @@ pub fn check_event() -> Vec<Event>  {
     let swap_memory = memory::swap_memory().unwrap();
     let mut sys = sysinfo::System::new();
     sys.refresh_cpu(); // Refreshing CPU information.
+    sys.refresh_memory(); // Refreshing CPU information.
         
     std::thread::sleep(block_time);
     sys.refresh_cpu();
+    sys.refresh_memory(); // Refreshing CPU information.
 
     
     sys.refresh_processes();
@@ -102,9 +104,11 @@ pub fn check_event() -> Vec<Event>  {
     let idle : f32 =  /*100.0 -*/ cpu_times_percent_percpu.iter().map(|x| x.idle() as f32).collect::<Vec<f32>>().iter().sum::<f32>() / cpus;
     let iw : f32 =  /*100.0 -*/ cpu_times_percent_percpu.iter().map(|x| x.iowait() as f32).collect::<Vec<f32>>().iter().sum::<f32>() / cpus;
     let cpu_use : f32 =  sys.cpus().iter().map(|x| x.cpu_usage()).sum::<f32>() / cpus;
+    let mem_use : f32 =  sys.used_memory() as f32 / sys.total_memory() as f32;
 
     dbg!(idle);
     dbg!(iw);
+    dbg!(&mem_use);
 	dbg!(&cpu_times_percent_percpu[0].idle());
     dbg!(&cpu_times_percent_percpu[0].iowait());
     dbg!(&cpu_use);
@@ -151,21 +155,21 @@ pub fn check_event() -> Vec<Event>  {
             table.push(x);
     } // I/O Problem
 
-    // if idle >=IDLE_W_THRESHOLD {
-    //         // x.set_begin(init_date);
-    //         // x.set_desc(String::from("Some App Usage"));
-    //         // x.set_state(String::from("W"));
+    if mem_use >=MEM_W_THRESHOLD {
+            let mut x = Event::new();
+            x.set_begin(init_date);
+            x.set_desc(String::from("High MEM Usage"));
+            if mem_use > MEM_C_THRESHOLD {x.set_state(String::from("C"));} else {x.set_state(String::from("W"));}
    
-    //         // top_process.sort_by_key(|k| (k.1).memory()); top_process.reverse();
-    //         // let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
-    //         // x.set_top(String::from("-"));
+            top_process.sort_by_key(|k| (k.1).memory()); top_process.reverse();
+            let top3 = top_process.as_slice()[0..3].iter().map(|x| String::from(x.1.name())).collect::<Vec<String>>();
+            x.set_top(top3.join(", "));
 
-    //         // x.set_value(-1.0);
-    //         // x.set_category(String::from("APP"));
-    //         // x.set_sor(0);
+            x.set_value(mem_use);
+            x.set_category(String::from("MEM"));
             
-    //         // table.push(x);
-    // } // App Problem
+            table.push(x);
+    } // App Problem
     
     if cpu_use >= CPU_W_THRESHOLD {
             let mut x = Event::new();

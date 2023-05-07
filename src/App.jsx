@@ -2,12 +2,22 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/tauri";
 import ProcessTable from "./modules/components/processTable";
+import EventsTable from "./modules/components/eventsTable";
+
 import "./App.css";
 import GenericButton from "./modules/components/Button";
 import "./modules/components/button.css";
 import ProcGraph from "./modules/components/procGraph";
 // import GenericGraphic from "./modules/components/GenericGraph";
 import GenericGraph from "./modules/components/GenericGraph";
+import CpuGraph from "./modules/components/cpuGraph";
+import MemGraph from "./modules/components/memGraph";
+
+
+import Paper from "@mui/material/Paper";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+
 
 const App = () => {
   const [isPause, setIsPause] = useState(true); 
@@ -16,6 +26,8 @@ const App = () => {
     console.log(isPause);
   };
 
+  const [value, setValue] = useState(0);
+
   return (
     <div className="row">
       <div className="column left">
@@ -23,6 +35,22 @@ const App = () => {
       </div>
       <div className="column right">
         <div className="header">
+        <div>
+        <Paper square>
+        <Tabs
+          value={value}
+          textColor="primary"
+          indicatorColor="primary"
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+
+        >
+          <Tab label="Process Table" />
+          <Tab label="Graph View" />
+        </Tabs>
+        </Paper>
+        </div>
           <h1>Processes</h1>
           {/* <h1>Ali Ashraf</h1> */}
           <button onClick={handleClick} className={isPause ? 'pause-button' : 'resume-button'}>
@@ -31,18 +59,22 @@ const App = () => {
           {/* <GenericButton buttonTitle={isPause ? 'Pause' : 'Resume'}
            handler={handleClick} cssClassName='my-button-class' /> */}
         </div>
-        <ProcessTable isPause={isPause} />
-        {/* <ProcGraph /> */}
         <div>
-        {/* <GenericGraph pid={1958} graphLabel="CPU Usage" index={0} functionName="get_process_data"/> */}
+         {
+           value == 0 ?
+           <><ProcessTable isPause={isPause} />
+           <EventsTable /></>
 
-        </div>
-                {/* <ProcGraph /> */}
-                {/* <div>
-                <GenericGraph pid={1958} graphLabel="Memory Usage" index={1} functionName="get_process_data"/>
+           :
+           <>
+           <h1>CPU</h1>
+           <CpuGraph />
+           <h1>Memory</h1>
+           {/* <MemGraph /> */}
+           </>
 
-                </div> */}
-
+         } 
+      </div>
       </div>
     </div>
   );

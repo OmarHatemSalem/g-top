@@ -98,6 +98,11 @@ const EventsTable = () => {
       accessorKey: 'category',
       header: 'Category',
       size:25,
+      Cell: ({ cell, row }) => (
+        <div>
+          <strong>{cell.getValue()}</strong>
+        </div>
+      ),
       
     },
     {

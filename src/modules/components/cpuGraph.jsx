@@ -34,6 +34,7 @@ let stream = {
   ]
 };
 
+let maxCPU = 101;
 const cpu_cores = await invoke("get_curr_total_cpu");
 
 for (let i=0; i<cpu_cores.length; i++) {
@@ -64,6 +65,7 @@ const options = {
         onRefresh: async function(chart) {
           let newPoint = await invoke("get_curr_total_cpu");
           console.log(newPoint);
+          options.scales.y.max =  newPoint.reduce((a, b) => Math.max(a, b), -Infinity);
           
          
           
@@ -78,7 +80,7 @@ const options = {
       }
     }, 
     y : {
-      max: 101,
+      max: maxCPU,
       min: 0,
       ticks: {
           stepSize: 0.5
